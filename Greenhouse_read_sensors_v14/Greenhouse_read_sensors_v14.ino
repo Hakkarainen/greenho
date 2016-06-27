@@ -242,8 +242,8 @@ byte reCalibrationNeedperSensorA5 = 0;
 
 /************************* WiFi Access Point *********************************/
 
-#define WLAN_SSID       "CSGuestNet_optout"  // can't be longer than 32 characters!
-#define WLAN_PASS       "4AGgVB-8tL9A"
+#define WLAN_SSID       "  "  // can't be longer than 32 characters!
+#define WLAN_PASS       "  "
 #define WLAN_SECURITY   WLAN_SEC_WPA2  // Can be: WLAN_SEC_UNSEC, WLAN_SEC_WEP,
 //         WLAN_SEC_WPA or WLAN_SEC_WPA2
 Adafruit_CC3000_Client client;
@@ -251,8 +251,8 @@ Adafruit_CC3000_Client client;
 
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883
-#define AIO_USERNAME    "thy01"
-#define AIO_KEY         "10fab204b83b4c63823e44c1b04014fb"
+#define AIO_USERNAME    "  "
+#define AIO_KEY         "  "
 
 /************ Global State (you don't need to change this!) ******************/
 
@@ -541,20 +541,6 @@ void loop() {
 
   unsigned long secsSince1970; // Current UNIX time
 
-  //  Serial.println();
-  //  Serial.println(F("  GREENHOUSE MAIN MENU"));
-  //  Serial.println(F("  SELECT FUNCTION KEY, PLEASE !"));
-  //  Serial.println();
-  //  lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-  //  lcd.print(F("MAIN MENU"));
-  //  lcd.setCursor(0, 1);
-  //  lcd.print(F("SELECT FUNCTION"));
-  //
-  //  char key =  keypad.waitForKey();
-  //
-  //  //char key = keypad.getKey();
-
-
   //initialize: CLEAR SENSOR INPUT STATISTIC ********
   pot01_StatisticX.clear();
   pot02_StatisticX.clear();
@@ -700,15 +686,8 @@ void loop() {
     //********FIRST SENSOR READING STARTS ***************
 
     currentpotID = measurementCycleCounter % 2;
-    //    Serial.println();
-    //    Serial.print(F("  currentpotID = "));
-    //    Serial.println(currentpotID);
 
     currentSensorPinID = measurementCycleCounter % 6;
-    //    Serial.println();
-    //    Serial.print(F("  currentSensorPinID = "));
-    //    Serial.println(currentSensorPinID);
-    //    Serial.println();
 
     // MQTT STARTS HERE:
 
@@ -757,27 +736,8 @@ void loop() {
       }
       Serial.println("  MQTT Connected!");
     }
+    MUUTA:
     //MQTT_connect();
-    //    mqtt.subscribe(&onoffbuttonLight);
-    //    mqtt.subscribe(&onoffbuttonHumid);
-    //    mqtt.subscribe(&onoffbuttonTemp);
-
-    // this is our 'wait for incoming subscription packets' busy subloop
-    //    Adafruit_MQTT_Subscribe *subscription;
-    //    while ((subscription = mqtt.readSubscription(1000))) {
-    //      if (subscription == &onoffbuttonLight_A1) {
-    //        Serial.print(F("Got: "));
-    //        Serial.println((char *)onoffbuttonLight_A1.lastread);
-    //      }
-    //      if (subscription == &onoffbuttonHumid_A3) {
-    //        Serial.print(F("Got: "));
-    //        Serial.println((char *)onoffbuttonHumid_A3.lastread);
-    //      }
-    //      if (subscription == &onoffbuttonTemp_A5) {
-    //        Serial.print(F("Got: "));
-    //        Serial.println((char *)onoffbuttonTemp_A5.lastread);
-    //      }
-    //    }
 
     unsigned long measurementTimeMs = millis(); // Measurements start time (ms)
 
@@ -1170,7 +1130,9 @@ void loop() {
           
           break;
         }
-      case 4: //temperaturePinA4 = Z-sensor in POT1
+      case 4: 
+      //MUUTA:
+      //temperaturePinA4 = Z-sensor in POT1
         if (sensorConfig[temperaturePinA4][3] > 0)
         {
           //float calibConstantA4 = 0.4883;
@@ -1273,6 +1235,7 @@ void loop() {
           //float calibConstantA5 = 0.4883;
 
           // *** RANDOM FUNCTION ****
+          MUUTA:
           long simulValue = random(10, 11); // will be 9 to 10
           float calibConstantA5 = simulValue / 10; // simulated measurement
           temperatureReadA5 = calibConstantA5 * read_sensorValue(temperaturePinA4);//simulated from A4
@@ -1402,7 +1365,6 @@ int read_sensorValue(int sensorPin) {
   int sample = 0;
   int samplesPerSensor = 5;
   int sampleInterval = 20; // ms
-  //int delay2 = 2000; // TESTING
 
   while (sample <= samplesPerSensor) {
     sensorRead = analogRead(sensorPin); //Read sensor
@@ -1410,10 +1372,6 @@ int read_sensorValue(int sensorPin) {
     sample = sample + 1;
     delay(sampleInterval);
   } //END OF while (sample <= samplesPerSensor)
-
-  //Serial.print(F(" Measurement time per sensor = ")); // TESTING ***
-  //Serial.println(((millis() - startT))); // TESTING ***
-  //delay (delay2);  // TESTING ***
 
   return read_Statistic.average();
 
@@ -1550,11 +1508,6 @@ byte test_sensorValue(unsigned long secsSince1970, int p_ID, int measurementTime
     iAlarm = 3;
   }
 
-  //              // TEST WHICH POT
-  //              byte iAlarm = 0;
-  //              if (p_ID > 1) {
-  //                iAlarm = 3;
-
 Serial.println("");
 if (rel_ReadAver > plant_Profile[0][0]) {
   Serial.println(F(" Sensor reading above the highest - limit: "));
@@ -1679,10 +1632,6 @@ Serial.print(F("  averSensorRead    "));
 Serial.println((averSensorRead));
 Serial.print(F("  averSensorRef     "));
 Serial.println((averSensorRef));
-//  Serial.print(F("  sensorRead / averSensorRead "));
-//  Serial.println(float(sensorRatio));
-//  Serial.print(F("  sensorRead / averSensorRef  "));
-//  Serial.println(float(rel_ReadAver));
 
 sensorType = sensorPin + 1;
 if (sensorType > 3) {
@@ -1747,16 +1696,6 @@ void playAlarms(int p_ID, int sensorPin, int potAlarms[][4], const int classCoun
   if (sensorType > 3) {
     sensorType = sensorType - 3;
   }
-//  // TEST IF POT2
-//   int iAlarm = 0;
-//  if (sensorPin % 2 == 1) {
-//    iAlarm = 3;
-//  }
-
-  //              int iAlarm = 0;
-  //              if (p_ID > 1) {
-  //                int iAlarm = iAlarm + 3;
-  //              }
 
   int i = 0;
   for (int iAlarm = 0; iAlarm < 6; i++){
@@ -2184,7 +2123,6 @@ void sensorStatistics(unsigned long secsSince1970, int pot_ID, int MeasurementCl
   Serial.print(F("  STANDARD DEVIATION              = "));
   Serial.println(Pot_StatisticZ.pop_stdev(), 0);
 
-  //for (int i = 0; i < maxsensorSettingsNumber; i++) {
   //print histogram
   i = 2;
   for (int j = 0; j < classCount; j++) {
@@ -2226,7 +2164,6 @@ void sensorStatistics(unsigned long secsSince1970, int pot_ID, int MeasurementCl
     }
   }
   Serial.println();
-  //}// END OF for i loop
 
   Serial.println();
   delay(delay3);
@@ -2444,151 +2381,11 @@ void listSSIDResults(void)
 
   cc3000.stopSSIDscan();
 }
-//******************* MOSQUITTO *******************
-// Function to connect and reconnect as necessary to the MQTT server.
-// Should be called in the loop function and it will take care if connecting.
-//void MQTT_connect() {
-//  int8_t ret;
-//
-//  // Stop if already connected.
-//  if (mqtt.connected()) {
-//    return;
-//  }
-//boolean CC3000connect(const char* wlan_ssid, const char* wlan_pass, uint8_t wlan_security);
-//
-//  Serial.print("Connecting to MQTT... ");
-//
-//  while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
-//    Serial.println(mqtt.connectErrorString(ret));
-//    if (ret < 0)
-//
-//      CC3000connect(WLAN_SSID, WLAN_PASS, WLAN_SECURITY);  // y0w, lets connect to wifi again
-//
-//    Serial.println("  Retrying MQTT connection in 5 seconds...");
-//    mqtt.disconnect();
-//    delay(5000);  // wait 5 seconds
-//  }
-//  Serial.println("MQTT Connected!");
-//}
 
-//boolean CC3000connect(const char* wlan_ssid, const char* wlan_pass, uint8_t wlan_security) {
-//  Watchdog.reset();
-//
-//  // Check for compatible firmware
-//  if (checkFirmwareVersion() < 0x113)   halt("  Wrong firmware version!");
-//
-//  // Delete any old connection data on the module
-//  Serial.println(F("\nDeleting old connection profiles"));
-//  if (!cc3000.deleteProfiles())     halt("  Failed!");
-//
-//#ifdef STATICIP
-//  Serial.println(F("  Setting static IP"));
-//  uint32_t ipAddress = cc3000.IP2U32(10, 0, 1, 19);
-//  uint32_t netMask = cc3000.IP2U32(255, 255, 255, 0);
-//  uint32_t defaultGateway = cc3000.IP2U32(10, 0, 1, 1);
-//  uint32_t dns = cc3000.IP2U32(8, 8, 4, 4);
-//
-//  if (!cc3000.setStaticIPAddress(ipAddress, netMask, defaultGateway, dns)) {
-//    Serial.println(F("  Failed to set static IP!"));
-//    while(1);
-//  }
-//#endif
-//
-//  // Attempt to connect to an access point
-//  Serial.print(F("\n  Attempting to connect to "));
-//  Serial.print(wlan_ssid); Serial.print(F("..."));
-//
-//  Watchdog.disable();
-//  // try 3 times
-//  if (!cc3000.connectToAP(wlan_ssid, wlan_pass, wlan_security, 3)) {
-//    return false;
-//  }
-//
-//  Watchdog.enable(8000);
-//  Serial.println(F("  Connected!"));
-//
-//uint8_t retries;
-//#ifndef STATICIP
-//  /* Wait for DHCP to complete */
-//  Serial.println(F("  Requesting DHCP"));
-//  retries = 10;
-//  while (!cc3000.checkDHCP())
-//  {
-//    Watchdog.reset();
-//    delay(1000);
-//    retries--;
-//    if (!retries) return false;
-//  }
-//#endif
-//  /* Display the IP address DNS, Gateway, etc.  */
-//  retries = 10;
-//  while (! displayConnectionDetails()) {
-//    Watchdog.reset();
-//    delay(1000);
-//    retries--;
-//    if (!retries) return false;
-//  }
-//
-//  Watchdog.reset();
-//
-//  return true;
-//}
-
-
-/**************************************************************************/
-/*!
-    @brief  Tries to read the CC3000's internal firmware patch ID
-*/
-/**************************************************************************/
-//uint16_t checkFirmwareVersion(void)
-//{
-//  uint8_t major, minor;
-//  uint16_t version;
-//
-//  if(!cc3000.getFirmwareVersion(&major, &minor))
-//  {
-//    Serial.println(F("  Unable to retrieve the firmware version!\r\n"));
-//    version = 0;
-//  }
-//  else
-//  {
-//    Serial.print(F("  Firmware V. : "));
-//    Serial.print(major); Serial.print(F(".")); Serial.println(minor);
-//    version = major; version <<= 8; version |= minor;
-//  }
-//  return version;
-//}
-
-
-/**************************************************************************/
-/*!
-    @brief  Tries to read the IP address and other connection details
-*/
-/**************************************************************************/
-//bool displayConnectionDetails(void)
-//{
-//  uint32_t ipAddress, netmask, gateway, dhcpserv, dnsserv;
-//
-//  if(!cc3000.getIPAddress(&ipAddress, &netmask, &gateway, &dhcpserv, &dnsserv))
-//  {
-//    Serial.println(F("  Unable to retrieve the IP Address!\r\n"));
-//    return false;
-//  }
-//  else
-//  {
-//    Serial.print(F("\nIP Addr: ")); cc3000.printIPdotsRev(ipAddress);
-//    Serial.print(F("\nNetmask: ")); cc3000.printIPdotsRev(netmask);
-//    Serial.print(F("\nGateway: ")); cc3000.printIPdotsRev(gateway);
-//    Serial.print(F("\nDHCPsrv: ")); cc3000.printIPdotsRev(dhcpserv);
-//    Serial.print(F("\nDNSserv: ")); cc3000.printIPdotsRev(dnsserv);
-//    Serial.println();
-//    return true;
-//  }
-//}
 //*************************************************************************
-//// Taking care of special key-events.
+// Taking care of special key-events.
 void keypadEvent(KeypadEvent eventKey) {
-  //if (flag == 0){
+
   switch (keypad.getState()) {
     case PRESSED:
 
@@ -2599,10 +2396,6 @@ void keypadEvent(KeypadEvent eventKey) {
         Serial.println();
         lcd.init();   lcd.backlight();
         lcd.print(F("FUNCTION_2      "));
-        //lcd.setCursor(0, 1);
-        // lcd.print(F("     "));
-        //Serial.println();
-        //printTimeStamp(secsSince1970);
         Serial.println();
         delay(delay6);
         break;
@@ -2623,8 +2416,6 @@ void keypadEvent(KeypadEvent eventKey) {
         Serial.println();
         lcd.init();   lcd.backlight();
         lcd.print(F("FUNCTION_3      "));
-        //        lcd.setCursor(0, 1);
-        //        lcd.print(F(""));
         delay(delay6);
 
         break;
@@ -2636,8 +2427,6 @@ void keypadEvent(KeypadEvent eventKey) {
         Serial.println();
         lcd.init();   lcd.backlight();
         lcd.print(F("FUNCTION_1     "));
-        //        lcd.setCursor(0, 1);
-        //        lcd.print(F("PUSH 9 TO START"));
         delay(delay6);
         break;
       }
@@ -2655,142 +2444,12 @@ void keypadEvent(KeypadEvent eventKey) {
 
         flag = 1;
         sensorConfPrint(sensorPin, sensorConfig, flag);
-
-        //       Serial.println(F("UpdateNTPTime"));
-        //        if (mysntp.UpdateNTPTime())
-        //        {
-        //          Serial.println(F("Current local time is:"));
-        //          mysntp.ExtractNTPTime(mysntp.NTPGetTime(&now, true), &timeExtract);
-        //
-        //          Serial.print(timeExtract.hour); Serial.print(F(":")); Serial.print(timeExtract.min); Serial.print(F(":")); Serial.print(timeExtract.sec); Serial.print(F(".")); Serial.println(timeExtract.millis);
-        //          Serial.print(pF(&dayStrs[timeExtract.wday])); Serial.print(F(", ")); Serial.print(pF(&monthStrs[timeExtract.mon])); Serial.print(F(" ")); Serial.print(timeExtract.mday); Serial.print(F(", ")); Serial.println(timeExtract.year);
-        //          Serial.print(F("Day of year: ")); Serial.println(timeExtract.yday + 1);
-        //
-        //          lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-        //          lcd.print(timeExtract.hour); lcd.print(F(":")); lcd.print(timeExtract.min); lcd.print(F(":")); lcd.print(timeExtract.sec);
-        //          lcd.print(F(".")); lcd.println(timeExtract.millis);
-        //
-        //          lcd.setCursor(0, 1);
-        //          lcd.print(pF(&dayStrs[timeExtract.wday])); lcd.print(F(", ")); lcd.print(pF(&monthStrs[timeExtract.mon]));
-        //          lcd.print(F(" ")); lcd.print(timeExtract.mday); lcd.print(F(", ")); lcd.println(timeExtract.year);
-        //          lcd.print(F("Day of year: ")); lcd.println(timeExtract.yday + 1);
-        //
-        //          lcd.print(F("GIVE POTS-ID:     ")); //potId on LCD
-        //
-        //        }
         break;
       }
   }
-  //} END OF if (flag == 0)
 }
-////********************************************************************
-////**************  SET-UP OF POTS and SENSORS  ************************
-////********************************************************************
-//
-//int setUpPotsAndSensors(int pot_ID, int potCount, int maxPotCount, int sensorCount, int maxsensorCount, byte sensorConfig[][6], int sensorTypeCount) {
-//  // Select the method of input the controls
-//
-//  Serial.println(F("  ENTER NUMBER OF POTS IN THE GREENHOUSE, PLEASE:"));
-//  lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//  lcd.print(F("ENTER NUMBER OF  "));
-//  lcd.setCursor(0, 1);
-//  lcd.print(F("POTS, PLEASE     "));
-//
-//  potCount = 100; //Just for while-loop entry
-//  while (potCount > maxPotCount) {
-//    char key =  keypad.waitForKey();
-//    //key = keypad.getKey();
-//    potCount = key - '0';
-//    //    long potCnt = key;
-//    //    potCount = (int)potCnt;
-//
-//    if (potCount > maxPotCount) {
-//      if ((sensorCount == '#') ||  (sensorCount == '*')) {
-//        Serial.print(F(" SORRY; ENTRY MUST BE A NUMBER"));
-//        Serial.println(maxsensorCount);
-//        lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//        lcd.print(F("MUST BE A NUMBER")); //potId on LCD
-//        lcd.setCursor(0, 1);
-//        lcd.print(F("                ")); //potId on LCD
-//      }
-//      Serial.print(F(" SORRY; BUT MAKSIMUM NUMBER OF POTS IS:"));
-//      Serial.println(maxPotCount);
-//      lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//      lcd.print(F("MAKSIMUM NUMBER  "));
-//      lcd.setCursor(0, 1);
-//      lcd.print(F("OF POTS IS  "));
-//      //lcd.setCursor(10, 1);
-//      lcd.print( maxPotCount);
-//      //delay (delay3);
-//
-//      Serial.println(F(" ENTER NUMBER OF POTS IN THE GREENHOUSE, PLEASE:"));
-//      lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//      lcd.print(F("ENTER NUMBER OF  "));
-//      lcd.setCursor(0, 1);
-//      lcd.print(F("POTS, PLEASE     "));
-//
-//    }
-//  } //END OF POTS COUNT WHILE
-//  Serial.print(F(" NUMBER OF POTS IN THE GREENHOUSE IS: "));
-//  Serial.println(potCount);
-//  lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//  lcd.print(F("POTS IN G-HOUSE "));
-//  lcd.setCursor(0, 1);
-//  lcd.print(potCount);
-//  //delay(delay3);
-//
-//
-//  //Serial.println(F(" "));
-//  // Select the method of input the controls
-//  Serial.println(F("  ENTER THE NUMBER OF THE SENSORS , PLEASE:"));
-//  lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//  lcd.print(F("ENTER NUMBER OF  ")); //potId on LCD
-//  lcd.setCursor(0, 1);
-//  lcd.print(F("SENSORS, PLEASE  ")); //potId on LCD
-//
-//
-//  sensorCount = 100; //Just for while-loop entry
-//  while (sensorCount > maxsensorCount) {
-//    char key =  keypad.waitForKey();
-//    sensorCount = key - '0';
-//    //key = keypad.getKey();
-//    //    long sensorXCnt = key;
-//    //    potCount = (int)sensorXCnt;
-//
-//    if (sensorCount > maxsensorCount) {
-//      if ((sensorCount == '#') ||  (sensorCount == '*')) {
-//        Serial.print(F(" SORRY; ENTRY MUST BE A NUMBER"));
-//        Serial.println(maxsensorCount);
-//        lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//        lcd.print(F("MUST BE A NUMBER")); //potId on LCD
-//        lcd.setCursor(0, 1);
-//        lcd.print(F("                ")); //potId on LCD
-//      }
-//      Serial.print(F(" SORRY; BUT MAKSIMUM NUMBER OF SENSORS IS:"));
-//      Serial.println(maxsensorCount);
-//      lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//      lcd.print(F("MAKSIMUM NUMBER  ")); //potId on LCD
-//      lcd.setCursor(0, 1);
-//      lcd.print(F("OF SENSORS IS  ")); //potId on LCD
-//      //lcd.setCursor(13, 1);
-//      lcd.print( maxsensorCount); //potId on LCD
-//      //delay (delay3);
-//
-//      Serial.println(F(" ENTER THE NUMBER OF THE SENSORS, PLEASE:"));
-//      lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//      lcd.print(F("ENTER NUMBER OF  ")); //potId on LCD
-//      lcd.setCursor(0, 1);
-//      lcd.print(F("SENSORS, PLEASE  "));
-//    }
-//  }
-//
-//  Serial.print(F(" NUMBER OF SENSORS IN GREENHOUSE IS: "));
-//  Serial.println(potCount);
-//  lcd.init();   lcd.backlight(); // INITIALIZE 16x2 CHARACTER LCD (I2C-display address: 0x3F / dec: 63 )
-//  lcd.print(F("NBR OF SENSORS   "));
-//  lcd.setCursor(0, 1);
-//  lcd.print(sensorCount);
-//delay(delay3);
+
+//MUUTA:
 
 //********************************************************************
 //**************  CONFIGURE SENSOR  ************************
@@ -2932,7 +2591,6 @@ int editParam(int sensorPin, byte sensorConfig[][6], int notAllowedToEdit[6]) {
   int notAllowedToEdit_1[6] = {1, 1, 1, 0, 0, 1}; // 1 = not allowed to edit
   int maxValue = 4;
 
-
   //Serial.println();
   Serial.println(F(" SELECT PARAMETER TO EDIT (par 3 or 4)"));
   lcd.init();   lcd.backlight();
@@ -3048,26 +2706,4 @@ boolean checkInputRange(int input, int maxValue, int notAllowedToEdit[]) {
   }
   return true;
 }
-//***************************************************
-//void digitalClockDisplay() {
-//  // digital clock display of the time
-//  Serial.print(hour());
-//  printDigits(minute());
-//  printDigits(second());
-//  Serial.print(" ");
-//  Serial.print(day());
-//  Serial.print(" ");
-//  Serial.print(month());
-//  Serial.print(" ");
-//  Serial.print(year());
-//  Serial.println();
-//}
-//
-//void printDigits(int digits) {
-//  // utility function for digital clock display: prints preceding colon and leading 0
-//  Serial.print(":");
-//  if (digits < 10)
-//    Serial.print('0');
-//  Serial.print(digits);
-//}
 
